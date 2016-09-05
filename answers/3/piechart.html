@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="d3sparql.js"></script>
+    <script>
+    function exec() {
+      var endpoint = d3.select("#endpoint").property("value")
+      var sparql = d3.select("#sparql").property("value")
+      d3sparql.query(endpoint, sparql, render)
+    }
+    function render(json) {
+      var config = {
+        "label": "label",
+        "size": "size",
+        "width":  600,  // canvas width
+        "height": 600,  // canvas height
+        "margin":  10,  // canvas margin
+        "hole":   200,  // doughnut hole: 0 for pie, r > 0 for doughnut
+        "selector": "#result"
+      }
+      d3sparql.piechart(json, config)
+    }
+    </script>
+  </head>
+  <body>
+    <h1>d3piechart</h1>
+    <div id="query" style="margin: 10px">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label for="endpoint" class="col-sm-2 control-label">SPARQL endpoint:</label>
+          <input id="endpoint" class="col-sm-4" value="http://dbpedia.org/sparql" type="text">
+        </div>
+        <div class="form-group">
+          <label for="sparql" class="col-sm-2 control-label">Query</label>
+          <textarea id="sparql" class="col-sm-5" rows="15">
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX yago: <http://dbpedia.org/class/yago/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+
+SELECT ?label ?size
+WHERE {
+  ?s a yago:PrefecturesOfJapan ;
+     rdfs:label ?label;
+     dbpedia-owl:areaTotal ?area_total .
+  FILTER (lang(?label) = 'ja')
+  BIND ((?area_total / 1000000) AS ?size)
+}
+ORDER BY DESC(?size)
+          </textarea>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-2">
+            <button class="btn btn-primary" type="button" onclick="exec()">Query</button>
+          </div>
+        </div>
+      </form>
+      <div id="result"></div>
+    </div>
+  </body>
+</html>
