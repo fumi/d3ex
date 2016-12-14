@@ -38,15 +38,16 @@
           <textarea id="sparql" class="col-sm-5" rows="15">
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX yago: <http://dbpedia.org/class/yago/>
-PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
 
 SELECT ?label ?size
 WHERE {
-  ?s a yago:PrefecturesOfJapan ;
-     rdfs:label ?label;
-     dbpedia-owl:areaTotal ?area_total .
+  ?s a yago:WikicatPrefecturesOfJapan ;
+    rdfs:label ?label;
+    dbo:areaTotal ?area_total .
   FILTER (lang(?label) = 'ja')
   BIND ((?area_total / 1000000) AS ?size)
+  FILTER (str(?s) != 'http://dbpedia.org/resource/Onjuku')
 }
 ORDER BY DESC(?size)
           </textarea>
