@@ -37,8 +37,7 @@
         </div>
         <div class="form-group">
           <label for="sparql" class="col-sm-2 control-label">Query</label>
-          <textarea id="sparql" class="col-sm-5" rows="15">
-PREFIX jst: <http://vocab.jst.go.jp/terms/sti#>
+          <textarea id="sparql" class="col-sm-5" rows="15">PREFIX jst: <http://vocab.jst.go.jp/terms/sti#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 select ?label (count(distinct ?article) AS ?size)
 where{
@@ -48,7 +47,7 @@ where{
   ?article jst:title-keyword / rdfs:label ?label .
   }
 ORDER BY desc(?size)
-          </textarea>
+LIMIT 30</textarea>
         </div>
         <div class="form-group">
           <label for="token" class="col-sm-2 control-label">API Token</label>
