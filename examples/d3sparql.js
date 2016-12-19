@@ -55,8 +55,12 @@ var d3sparql = {
      </body>
     </html>
 */
-d3sparql.query = function(endpoint, sparql, callback) {
-  var url = endpoint + "?query=" + encodeURIComponent(sparql)
+d3sparql.query = function(endpoint, sparql, token, callback) {
+  var url = endpoint + "?"
+  if (token != "") {
+    url += "lu=" + token + "&"
+  }
+  url += "query=" + encodeURIComponent(sparql)
   if (d3sparql.debug) { console.log(endpoint) }
   if (d3sparql.debug) { console.log(url) }
   var mime = "application/sparql-results+json"
