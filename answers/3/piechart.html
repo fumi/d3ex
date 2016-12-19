@@ -9,7 +9,8 @@
     function exec() {
       var endpoint = d3.select("#endpoint").property("value")
       var sparql = d3.select("#sparql").property("value")
-      d3sparql.query(endpoint, sparql, render)
+      var token = d3.select("#token").property("value")
+      d3sparql.query(endpoint, sparql, token, render)
     }
     function render(json) {
       var config = {
@@ -31,26 +32,25 @@
       <form class="form-horizontal">
         <div class="form-group">
           <label for="endpoint" class="col-sm-2 control-label">SPARQL endpoint:</label>
-          <input id="endpoint" class="col-sm-4" value="http://dbpedia.org/sparql" type="text">
+          <input id="endpoint" class="col-sm-4" value="https://stirdf.jglobal.jst.go.jp/sparql" type="text">
         </div>
         <div class="form-group">
           <label for="sparql" class="col-sm-2 control-label">Query</label>
-          <textarea id="sparql" class="col-sm-5" rows="15">
+          <textarea id="sparql" class="col-sm-5" rows="15">PREFIX jst: <http://vocab.jst.go.jp/terms/sti#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX yago: <http://dbpedia.org/class/yago/>
-PREFIX dbo: <http://dbpedia.org/ontology/>
+select ?label (count(distinct ?article) AS ?size)
+where{
+  ?article a jst:Article.
+  ?article jst:chemical / rdfs:seeAlso <http://stirdf.jst.go.jp/id/200907061125500039>.
 
-SELECT ?label ?size
-WHERE {
-  ?s a yago:WikicatPrefecturesOfJapan ;
-    rdfs:label ?label;
-    dbo:areaTotal ?area_total .
-  FILTER (lang(?label) = 'ja')
-  BIND ((?area_total / 1000000) AS ?size)
-  FILTER (str(?s) != 'http://dbpedia.org/resource/Onjuku')
-}
-ORDER BY DESC(?size)
-          </textarea>
+  ?article jst:title-keyword / rdfs:label ?label .
+  }
+ORDER BY desc(?size)
+LIMIT 30</textarea>
+        </div>
+        <div class="form-group">
+          <label for="token" class="col-sm-2 control-label">API Token</label>
+          <input id="token" value="" type="text">
         </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-2">
