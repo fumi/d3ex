@@ -60,7 +60,7 @@ d3sparql.query = function(endpoint, sparql, token, callback) {
   if (token != "") {
     url += "lu=" + token + "&"
   }
-  url += "query=" + encodeURIComponent(sparql)
+  url += "format=json&query=" + encodeURIComponent(sparql)
   if (d3sparql.debug) { console.log(endpoint) }
   if (d3sparql.debug) { console.log(url) }
   var mime = "application/sparql-results+json"

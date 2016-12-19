@@ -9,7 +9,8 @@
     function exec() {
       var endpoint = d3.select("#endpoint").property("value")
       var sparql = d3.select("#sparql").property("value")
-      d3sparql.query(endpoint, sparql, render)
+      var token = d3.select("#token").property("value")
+      d3sparql.query(endpoint, sparql, token, render)
     }
     function render(json) {
       var config = {
@@ -32,30 +33,27 @@
       <form class="form-inline">
         <label>SPARQL endpoint:</label>
         <div class="input-append">
-          <input id="endpoint" class="span6" value="http://ja.dbpedia.org/sparql" type="text">
+          <input id="endpoint" class="span6" value="https://stirdf.jglobal.jst.go.jp/sparql" type="text">
           <button class="btn" type="button" onclick="exec()">Query</button>
           <button class="btn" type="button" onclick="toggle()"><i id="button" class="icon-chevron-up"></i></button>
         </div>
       </form>
-      <textarea id="sparql" class="span9" rows=15>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
-PREFIX prop-ja: <http://ja.dbpedia.org/property/>
-
-SELECT ?root_name ?parent_name ?child_name
-WHERE {
-  VALUES ?root_name { "東京駅"@ja }
-  ?root rdfs:label ?root_name ;
-    prop-ja:次の駅{1,5} ?child .
-  ?parent prop-ja:次の駅 ?child ;
-    rdfs:label ?parent_name .
-  MINUS { ?child prop-ja:次の駅 ?parent . }
-  ?child rdfs:label ?child_name .
-  FILTER (LANG(?parent_name) = 'ja')
-  FILTER (LANG(?child_name) = 'ja')
-} GROUP BY ?root_name ?parent_name ?child_name
+      <textarea id="sparql" class="span9" rows=15>PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX xl: <http://www.w3.org/2008/05/skos-xl#>
+select ?root_name ?parent_name ?child_name
+where{
+  <http://stirdf.jst.go.jp/id/200906057413289236> rdfs:label ?root_name ;
+         skos:narrower|skos:narrower/skos:narrower ?child .
+  ?parent skos:narrower ?child ;
+          xl:prefLabel/xl:literalForm ?parent_name .
+  ?child xl:prefLabel/xl:literalForm ?child_name .
+}
+GROUP BY ?root_name ?parent_name ?child_name
       </textarea>
+      <div class="form-group">
+        <label for="token" class="col-sm-2 control-label">API Token</label>
+        <input id="token" value="" type="text">
+      </div>
     </div>
   </body>
 </html>
